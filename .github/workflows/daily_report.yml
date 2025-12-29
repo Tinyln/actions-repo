@@ -11,15 +11,18 @@ on:
 jobs:
   trigger_dify:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # 在这里定义你想查询的所有主题
+        news_topic: ["科技动态", "时事热点", "金融财经"] 
+    
     steps:
-      - name: Call Dify Workflow API
+      - name: Trigger Dify for ${{ matrix.news_topic }}
         run: |
           curl -X POST 'https://api.dify.ai/v1/workflows/run' \
           --header 'Authorization: Bearer ${{ secrets.DIFY }}' \
           --header 'Content-Type: application/json' \
           --data-raw '{
-            "inputs": {
-              "topic": "AI 与大模型最新动态"
-            },
+            "inputs": {"topic": "${{ matrix.news_topic }}"},
             "user": "github-actions-bot"
           }'
